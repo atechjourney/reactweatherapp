@@ -1,72 +1,51 @@
-import React, { useState } from "react";
-import axios from 'axios';
-import "./Weather.css";
-import WeatherInfo from "./WeatherInfo";
-import Weatherforecast from "./WeatherForecast";
+import React, { useState, useEffect } from "react";
+import "./WeatherForecast.css";
+import axios from "axios";
+// import WeatherForecastDay from "./WeatherForecastDay";
 
+export default function WeatherForecast(props) {
+    let [loaded, setLoaded] = useState(false);
+    let [forecast, setForecast] = useState(null);
 
-export default function Weather(props) {
-    const [weatherData, setWeatherData] = useState({ ready: false });
-    const [city, setCity] = useState(props.defaultCity);
+    useEffect(() => {
+        setLoaded(false);
+    }, [props.coordinates]);
 
     function handleResponse(response) {
-        setWeatherData({
-            ready: true,
-            coordinates: response.data.coord,
-            temperature: response.data.main.temp,
-            humidity: response.data.main.humidity,
-            date: new Date(response.data.dt * 1000),
-            description: response.data.weather[0].description,
-            icon: response.data.weather[0].icon,
-            wind: response.data.wind.speed,
-            city: response.data.name,
-        });
+        setForecast(response.data.daily);
+        setLoaded(true);
     }
 
-    function handleSubmit(event) {
-        event.preventDefault();
-        search();
-    }
+    function load() {
+        let apiKey = "57e17ed0e916203d78193af5eb1c0960";
+        let longitude = props.coordinates.lon;
+        let latitude = props.coordinates.lat;
+        let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
 
-    function handleCityChange(event) {
-        setCity(event.target.value);
-    }
-
-    function search() {
-        const apiKey = "57e17ed0e916203d78193af5eb1c0960";
-        let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
         axios.get(apiUrl).then(handleResponse);
     }
 
-    if (weatherData.ready) {
+    if (loaded) {
         return (
-            <div className="Weather">
-                <form onSubmit={handleSubmit}>
-                    <div className="row">
-                        <div className="col-9">
-                            <input
-                                type="search"
-                                placeholder="Enter a city.."
-                                className="form-control"
-                                autoFocus="on"
-                                onChange={handleCityChange}
-                            />
-                        </div>
-                        <div className="col-3">
-                            <input
-                                type="submit"
-                                value="Search"
-                                className="btn btn-primary w-100"
-                            />
-                        </div>
-                    </div>
-                </form>
-                <WeatherInfo data={weatherData} />
-                <WeatherForecast coordinates={weatherData.coordinates} />
+            <div className="WeatherForecast">
+                <div className="row">
+                    {forecast.map(function (dailyForecast, index) {
+                        if (index < 5) {
+                            return (
+                                <div className="col" key={index}>
+                                    {/* <WeatherForecastDay data={dailyForecast} /> */}
+                                </div>
+                            );
+                        } else {
+                            return null;
+                        }
+                    })}
+                </div>
             </div>
         );
     } else {
-        search();
-        return "Loading...";
+        load();
+
+        return null;
     }
 }
