@@ -71,4 +71,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 Error fix for npm:
 [export NODE_OPTIONS=--openssl-legacy-provider]
+
 # reactweatherapp
