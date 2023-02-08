@@ -9,11 +9,15 @@ export default function App() {
       <div className="container">
         <Weather defaultCity="Jamaica" />
         <footer>
-          <p> This project was coded by Alyssa Jones and is <a href=" " target=" " rel="noreferrer">
+          This project was coded by Alyssa Jones and is <a href="https://github.com/atechjourney/reactweatherapp" target=" " rel="noreferrer">
             {" "}
-            Open sourced
+            Open sourced on Github
+
+          </a> {" "}
+          and {" "}
+          <a href="https://vermillion-blancmange-4bab0f.netlify.app/" target=" " rel="noreferrer">
+            Hosted on Netlify
           </a>
-          </p>
         </footer>
       </div>
     </div>
